@@ -15,6 +15,7 @@ import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
 
 import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -127,15 +128,34 @@ public class StarFlexEmulator {
 
     public void emulateData() throws MqttException, InterruptedException {
         final String serverURI = String.format("tcp://%s:%d", mqttHost, mqttPort);
-        final String uniqueID = String.format("%s_%s", macId, StringUtils.shortUUID());
-        final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID);
-        starFlexClient.connect();
+        final String uniqueID = MqttAsyncStarFlexClient.generateClientId();
+        final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, new MemoryPersistence());
+        LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
+        MqttConnectOptions co = new MqttConnectOptions();
+        co.setCleanSession(true);
+        starFlexClient.connect(co);
         StarFlex starFlex;
 
         switch (starFlexType) {
             case STAR_FLEX_IE:
             case STAR_FLEX_REQUEST:
             case STAR_FLEX_RESPONSE: {
+                starFlexClient.setCallback(new MqttCallback() {
+                    @Override
+                    public void connectionLost(Throwable cause) {
+                        LOGGER.warn(String.format("Connection Lost: %s ", cause.getMessage()));
+                    }
+
+                    @Override
+                    public void messageArrived(String topic, MqttMessage message) throws Exception {
+
+                    }
+
+                    @Override
+                    public void deliveryComplete(IMqttDeliveryToken token) {
+
+                    }
+                });
                 if (isUnlimitedRecords()) {
                     while (true) {
                         starFlex = generateStarFlexByType(starFlexType);
@@ -161,8 +181,7 @@ public class StarFlexEmulator {
             }
             case STAR_FLEX_DATA: {
                 // Getting the resquest topic filter.
-                final StarFlexRequest request = new StarFlexRequest.StarFlexRequestBuilder().setDefaultValues().build();
-                request.setMacId(macId);
+                final StarFlexRequest request = new StarFlexRequest.StarFlexRequestBuilder().setDefaultValues().setMacId(macId).build();
 
                 // Subscribe to a request topic filter by mac ID.
                 subscribe(starFlexClient, request.getTopic());
@@ -171,7 +190,7 @@ public class StarFlexEmulator {
                 starFlexClient.setCallback(new MqttCallback() {
                     @Override
                     public void connectionLost(Throwable cause) {
-
+                        LOGGER.warn(String.format("Connection Lost: %s ", cause.getMessage()));
                     }
 
                     @Override
@@ -181,7 +200,7 @@ public class StarFlexEmulator {
                         LOGGER.info(String.format("Got the command: %s", request.getCmd()));
                         StarFlexRequest.Command command = StarFlexRequest.Command.fromString(request.getCmd()).get();
 
-                        final String otherUniqueID = String.format("%s_%s", macId, StringUtils.shortUUID());
+                        final String otherUniqueID = MqttAsyncStarFlexClient.generateClientId();
                         MqttAsyncStarFlexClient client = new MqttAsyncStarFlexClient(serverURI, otherUniqueID);
                         client.connect();
                         switch (command) {
