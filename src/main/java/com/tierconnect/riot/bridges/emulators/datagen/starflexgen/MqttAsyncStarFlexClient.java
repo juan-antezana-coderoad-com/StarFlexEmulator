@@ -1,8 +1,11 @@
 package com.tierconnect.riot.bridges.emulators.datagen.starflexgen;
 
 import com.google.common.base.Preconditions;
+
 import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model.StarFlex;
+
 import org.apache.log4j.Logger;
+
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -15,26 +18,56 @@ public class MqttAsyncStarFlexClient extends MqttAsyncClient {
     private static final Logger LOGGER = Logger.getLogger(MqttAsyncStarFlexClient.class);
     public static final int DEFAULT_QOS = 0;
 
+    private String macId;
     private String topic;
     private MqttMessage message;
 
-    public MqttAsyncStarFlexClient(String serverURI, String clientId) throws MqttException {
-        super(serverURI, clientId);
-    }
-
-    public MqttAsyncStarFlexClient(String serverURI, String clientId, MqttClientPersistence persistence) throws MqttException {
+    /**
+     * Builds a instance of MqttAsyncStarFlexClient.
+     *
+     * @param serverURI   the value of server URI
+     * @param clientId    the value of client ID
+     * @param macId       the value of mac ID
+     * @param persistence the persistence
+     * @throws MqttException
+     */
+    public MqttAsyncStarFlexClient(final String serverURI, final String clientId, final String macId, final MqttClientPersistence persistence) throws MqttException {
         super(serverURI, clientId, persistence);
+        this.macId = macId;
     }
 
+    /**
+     * Sets the value of macID,
+     *
+     * @param macId the new value of mac ID
+     */
+    public void setMacId(final String macId) {
+        Preconditions.checkNotNull(macId);
+        this.macId = macId;
+    }
+
+    /**
+     * Check the connection.
+     *
+     * @throws InterruptedException
+     * @throws MqttException
+     */
     public void checkConnection() throws InterruptedException, MqttException {
         while (!this.isConnected()) {
-            LOGGER.warn(String.format("Client Id : %s is trying to connect......", this.getClientId()));
+            LOGGER.warn(String.format("Client Id : %s_%s is trying to connect......", this.macId, this.getClientId()));
             this.connect();
             Thread.sleep(3000);
         }
-        LOGGER.info(String.format("client Id: %s is connected", this.getClientId()));
+        LOGGER.info(String.format("client Id: %s_%s is connected", this.macId, this.getClientId()));
     }
 
+    /**
+     * Publish a starflex.
+     *
+     * @param starFlex the starflex
+     * @throws MqttException
+     * @throws InterruptedException
+     */
     public void publish(final StarFlex starFlex) throws MqttException, InterruptedException {
         Preconditions.checkNotNull(starFlex);
         this.topic = starFlex.getTopic();
@@ -47,6 +80,13 @@ public class MqttAsyncStarFlexClient extends MqttAsyncClient {
         LOGGER.info(String.format("Published the topic:%s message:%s", starFlex.getTopic(), starFlex.getMessage()));
     }
 
+    /**
+     * Subscribe a topic filter
+     *
+     * @param topicFilter the topic filter
+     * @throws MqttException
+     * @throws InterruptedException
+     */
     public void subscribe(final String topicFilter) throws MqttException, InterruptedException {
         Preconditions.checkNotNull(topicFilter);
         this.checkConnection();

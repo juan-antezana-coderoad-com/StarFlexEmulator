@@ -1,5 +1,6 @@
 package com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model;
 
+import com.google.common.base.Preconditions;
 import com.tierconnect.riot.bridges.emulators.utils.JsonUtils;
 
 import java.io.Serializable;
@@ -13,7 +14,13 @@ public class StarFlexData implements StarFlex {
 
     private TagReadDataMessage tagReadDataMessage;
 
+    /**
+     * Builds an instance of StarFlexData.
+     *
+     * @param builder the StarFlexDataBuilder
+     */
     private StarFlexData(final StarFlexDataBuilder builder) {
+        Preconditions.checkNotNull(builder);
         this.macId = builder.getMacId();
         this.tagReadDataMessage = builder.getTagReadDataMessage();
     }
@@ -34,14 +41,28 @@ public class StarFlexData implements StarFlex {
         return String.format("[%s]", JsonUtils.convertObjectToJson(this.getTagReadDataMessage()));
     }
 
+    /**
+     * Gets the value of macId
+     *
+     * @return the value of macId
+     */
     public String getMacId() {
         return macId;
     }
 
+    /**
+     * Gets the value of tagReadDataMessage
+     *
+     * @return the value of getTagReadDataMessage
+     */
     public TagReadDataMessage getTagReadDataMessage() {
         return tagReadDataMessage;
     }
 
+    /**
+     * TagReadDataMessage class.
+     *
+     */
     public static class TagReadDataMessage implements Serializable {
 
         private String type;
@@ -52,6 +73,11 @@ public class StarFlexData implements StarFlex {
         private String transmitSource;
         private String data;
 
+        /**
+         * Builds an instance of TagReadDataMessage
+         *
+         * @param builder the TagReadDataMessageBuilder
+         */
         private TagReadDataMessage(final TagReadDataMessageBuilder builder) {
             type = builder.getType();
             timestamp = builder.getTimestamp();
@@ -90,6 +116,10 @@ public class StarFlexData implements StarFlex {
             return data;
         }
 
+        /**
+         * TagReadDataMessageBuilder class.
+         *
+         */
         public static class TagReadDataMessageBuilder {
             private static final String DATA_FORMAT = "0x3000%23d62D3";
             public static final String DEFAULT_TYPE = "TagReadData";
@@ -167,11 +197,22 @@ public class StarFlexData implements StarFlex {
                 return this;
             }
 
+            /**
+             * Sets the value of data.
+             *
+             * @param data the new value of data
+             * @return the TagReadDataMessageBuilder
+             */
             public TagReadDataMessageBuilder setData(final String data) {
                 this.data = data;
                 return this;
             }
 
+            /**
+             * Sets all values with default values.
+             *
+             * @return the TagReadDataMessageBuilder
+             */
             public TagReadDataMessageBuilder setDefaultValues() {
                 type = DEFAULT_TYPE;
                 timestamp = DEFAULT_TIMESTAMP;
@@ -183,47 +224,98 @@ public class StarFlexData implements StarFlex {
                 return this;
             }
 
+            /**
+             * Set all values with random values.
+             *
+             * @return the TagReadDataMessageBuilder
+             */
             public TagReadDataMessageBuilder setRandomValues() {
                 return this.setDefaultValues();
             }
 
+            /**
+             * Builds a TagReadDataMessage.
+             *
+             * @return the TagReadDataMessage
+             */
             public TagReadDataMessage build() {
                 return new TagReadDataMessage(this);
             }
         }
     }
 
+    /**
+     * StarFlexDataBuilder class,
+     *
+     */
     public static class StarFlexDataBuilder {
         private String MacId;
         private TagReadDataMessage tagReadDataMessage;
 
+        /**
+         * Gets the value of macId
+         *
+         * @return the value of macId
+         */
         public String getMacId() {
             return MacId;
         }
 
+        /**
+         * Gets the value of tagReadDataMessage.
+         *
+         * @return the value of tagReadDataMessage
+         */
         public TagReadDataMessage getTagReadDataMessage() {
             return tagReadDataMessage;
         }
 
-        public StarFlexDataBuilder setMacId(String macId) {
+        /**
+         * Sets the value of macId.
+         *
+         * @param macId the new value of macId
+         * @return the StarFlexDataBuilder
+         */
+        public StarFlexDataBuilder setMacId(final String macId) {
             MacId = macId;
             return this;
         }
 
-        public StarFlexDataBuilder setTagReadDataMessage(TagReadDataMessage tagReadDataMessage) {
+        /**
+         * Sets the value of tagReadDataMessage.
+         *
+         * @param tagReadDataMessage the new value of tagReadDataMessage
+         * @return the StarFlexDataBuilder
+         */
+        public StarFlexDataBuilder setTagReadDataMessage(final TagReadDataMessage tagReadDataMessage) {
             this.tagReadDataMessage = tagReadDataMessage;
             return this;
         }
 
+        /**
+         * Sets all values with default values.
+         *
+         * @return the StarFlexDataBuilder
+         */
         private StarFlexDataBuilder setDefaultValues() {
             this.tagReadDataMessage = new TagReadDataMessage.TagReadDataMessageBuilder().setDefaultValues().build();
             return this;
         }
 
+        /**
+         * Sets all value with ramdom values.
+         *
+         * @return the StarFlexDataBuilder
+         */
         public StarFlexDataBuilder setRandomValues() {
             return this.setDefaultValues();
         }
 
+        /**
+         * Builds a StarFlexData
+         *
+         * @return the StarFlexData
+         */
         public StarFlexData build() {
             return new StarFlexData(this);
         }

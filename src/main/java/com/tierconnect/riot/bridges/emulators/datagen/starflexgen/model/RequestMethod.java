@@ -25,17 +25,33 @@ public enum RequestMethod implements Serializable {
 
     private String value;
 
+    /**
+     * Builds an instance of RequestMethod
+     *
+     * @param value the value
+     */
     RequestMethod(final String value) {
         Preconditions.checkNotNull(value);
         this.value = value;
 
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     @JsonValue
     public String getValue() {
         return value;
     }
 
+    /**
+     * Gets a RequestMethod from a String
+     *
+     * @param value the value of string
+     * @return the RequestMethod
+     */
     public static Optional<RequestMethod> fromString(final String value) {
         RequestMethod result = null;
         for (RequestMethod method :
