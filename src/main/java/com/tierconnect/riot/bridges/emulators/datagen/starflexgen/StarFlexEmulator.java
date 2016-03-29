@@ -136,7 +136,8 @@ public class StarFlexEmulator {
             case STAR_FLEX_RESPONSE: {
                 final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, new MemoryPersistence());
                 LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
-                starFlexClient.connect().waitForCompletion();
+                if (!starFlexClient.isConnected()) starFlexClient.connect().waitForCompletion();
+
                 starFlexClient.setCallback(new MqttCallback() {
                     @Override
                     public void connectionLost(Throwable cause) {
@@ -180,7 +181,7 @@ public class StarFlexEmulator {
                 final StarFlexRequest request = new StarFlexRequest.StarFlexRequestBuilder().setDefaultValues().setMacId(macId).build();
                 final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, new MemoryPersistence());
                 LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
-                starFlexClient.connect().waitForCompletion();
+                if (!starFlexClient.isConnected()) starFlexClient.connect().waitForCompletion();
 
                 // Subscribe to a request topic filter by mac ID.
                 subscribe(starFlexClient, request.getTopic());
@@ -190,6 +191,12 @@ public class StarFlexEmulator {
                     @Override
                     public void connectionLost(Throwable cause) {
                         LOGGER.warn(String.format("Connection Lost: %s ", cause.getMessage()));
+                        try {
+                            starFlexClient.checkConnection();
+                            emulateData();
+                        } catch (Exception e) {
+                            LOGGER.error(e.getMessage());
+                        }
                     }
 
                     @Override
