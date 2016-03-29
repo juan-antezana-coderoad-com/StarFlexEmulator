@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.tierconnect.riot.bridges.emulators.utils.JsonUtils;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by jantezana on 3/21/16.
@@ -12,7 +14,7 @@ public class StarFlexData implements StarFlex {
 
     private String macId;
 
-    private TagReadDataMessage tagReadDataMessage;
+    private List<TagReadDataMessage> tagReadDataMessages;
 
     /**
      * Builds an instance of StarFlexData.
@@ -22,7 +24,7 @@ public class StarFlexData implements StarFlex {
     private StarFlexData(final StarFlexDataBuilder builder) {
         Preconditions.checkNotNull(builder);
         this.macId = builder.getMacId();
-        this.tagReadDataMessage = builder.getTagReadDataMessage();
+        this.tagReadDataMessages = builder.getTagReadDataMessages();
     }
 
     @Override
@@ -38,7 +40,7 @@ public class StarFlexData implements StarFlex {
 
     @Override
     public String getMessage() {
-        return String.format("[%s]", JsonUtils.convertObjectToJson(this.getTagReadDataMessage()));
+        return String.format("%s", JsonUtils.convertObjectToJson(this.tagReadDataMessages));
     }
 
     /**
@@ -51,17 +53,16 @@ public class StarFlexData implements StarFlex {
     }
 
     /**
-     * Gets the value of tagReadDataMessage
+     * Gets the list of tagReadDataMessages
      *
      * @return the value of getTagReadDataMessage
      */
-    public TagReadDataMessage getTagReadDataMessage() {
-        return tagReadDataMessage;
+    public List<TagReadDataMessage> getTagReadDataMessages() {
+        return tagReadDataMessages;
     }
 
     /**
      * TagReadDataMessage class.
-     *
      */
     public static class TagReadDataMessage implements Serializable {
 
@@ -118,7 +119,6 @@ public class StarFlexData implements StarFlex {
 
         /**
          * TagReadDataMessageBuilder class.
-         *
          */
         public static class TagReadDataMessageBuilder {
             private static final String DATA_FORMAT = "0x3000%23d62D3";
@@ -246,11 +246,11 @@ public class StarFlexData implements StarFlex {
 
     /**
      * StarFlexDataBuilder class,
-     *
      */
     public static class StarFlexDataBuilder {
+        public static final int DEFAULT_TAG_READ_DATA_MESSAGE_NUMBER = 500;
         private String MacId;
-        private TagReadDataMessage tagReadDataMessage;
+        private List<TagReadDataMessage> tagReadDataMessages;
 
         /**
          * Gets the value of macId
@@ -262,12 +262,12 @@ public class StarFlexData implements StarFlex {
         }
 
         /**
-         * Gets the value of tagReadDataMessage.
+         * Gets the list of tagReadDataMessages.
          *
-         * @return the value of tagReadDataMessage
+         * @return the list of tagReadDataMessage
          */
-        public TagReadDataMessage getTagReadDataMessage() {
-            return tagReadDataMessage;
+        public List<TagReadDataMessage> getTagReadDataMessages() {
+            return tagReadDataMessages;
         }
 
         /**
@@ -282,13 +282,13 @@ public class StarFlexData implements StarFlex {
         }
 
         /**
-         * Sets the value of tagReadDataMessage.
+         * Sets the list of tagReadDataMessages.
          *
-         * @param tagReadDataMessage the new value of tagReadDataMessage
+         * @param tagReadDataMessages the new list of tagReadDataMessages
          * @return the StarFlexDataBuilder
          */
-        public StarFlexDataBuilder setTagReadDataMessage(final TagReadDataMessage tagReadDataMessage) {
-            this.tagReadDataMessage = tagReadDataMessage;
+        public StarFlexDataBuilder setTagReadDataMessages(final List<TagReadDataMessage> tagReadDataMessages) {
+            this.tagReadDataMessages = tagReadDataMessages;
             return this;
         }
 
@@ -297,18 +297,51 @@ public class StarFlexData implements StarFlex {
          *
          * @return the StarFlexDataBuilder
          */
-        private StarFlexDataBuilder setDefaultValues() {
-            this.tagReadDataMessage = new TagReadDataMessage.TagReadDataMessageBuilder().setDefaultValues().build();
+        public StarFlexDataBuilder setDefaultValues() {
+            TagReadDataMessage tagReadDataMessage;
+            List<TagReadDataMessage> dataMessages = new LinkedList<TagReadDataMessage>();
+            for (int index = 0; index < DEFAULT_TAG_READ_DATA_MESSAGE_NUMBER; index++) {
+                tagReadDataMessage = new TagReadDataMessage.TagReadDataMessageBuilder().setDefaultValues().build();
+                dataMessages.add(tagReadDataMessage);
+            }
+            this.tagReadDataMessages = dataMessages;
             return this;
         }
 
         /**
-         * Sets all value with ramdom values.
+         * Set all values with default values.
+         *
+         * @param tagReadDataMessageNumber the value of tagReadDataMessageNumber
+         * @return the StarFlexDataBuilder
+         */
+        public StarFlexDataBuilder setDefaultValues(final int tagReadDataMessageNumber) {
+            TagReadDataMessage tagReadDataMessage;
+            List<TagReadDataMessage> dataMessages = new LinkedList<TagReadDataMessage>();
+            for (int index = 0; index < tagReadDataMessageNumber; index++) {
+                tagReadDataMessage = new TagReadDataMessage.TagReadDataMessageBuilder().setDefaultValues().build();
+                dataMessages.add(tagReadDataMessage);
+            }
+            this.tagReadDataMessages = dataMessages;
+            return this;
+        }
+
+        /**
+         * Sets all value with random values.
          *
          * @return the StarFlexDataBuilder
          */
         public StarFlexDataBuilder setRandomValues() {
             return this.setDefaultValues();
+        }
+
+        /**
+         * Sets all values with random values.
+         *
+         * @param tagReadDataMessageNumber the value of tagReadDataMessageNumber
+         * @return the StarFlexDataBuilder
+         */
+        public StarFlexDataBuilder setRandomValues(final int tagReadDataMessageNumber) {
+            return this.setDefaultValues(tagReadDataMessageNumber);
         }
 
         /**

@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.eclipse.paho:mqtt-client:0.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.paho/mqtt-client/0.4.0/70efcaca7d1c70ad5dc716a124f2861f07fe27bf/mqtt-client-0.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.paho/mqtt-client/0.4.0/41aac9e3534aa330c6086ce9bf2f51358c237755/mqtt-client-0.4.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

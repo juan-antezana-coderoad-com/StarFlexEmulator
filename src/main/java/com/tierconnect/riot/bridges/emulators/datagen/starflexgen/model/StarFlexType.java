@@ -15,15 +15,31 @@ public enum StarFlexType {
 
     private String value;
 
+    /**
+     * Builds an instance of StarFlexType.
+     *
+     * @param value the value
+     */
     StarFlexType(final String value) {
         Preconditions.checkNotNull(value);
         this.value = value;
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Gets a StarFlexType from a string
+     *
+     * @param value the string value
+     * @return the StarFlexType
+     */
     public static Optional<StarFlexType> fromString(final String value) {
         Preconditions.checkNotNull(value);
         StarFlexType result = null;

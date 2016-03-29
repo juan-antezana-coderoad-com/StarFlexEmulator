@@ -178,27 +178,14 @@ public class StarFlexEmulator {
                 case STAR_FLEX_RESPONSE: {
                     final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, macId, new MemoryPersistence());
                     LOGGER.info(String.format("Generated the Clien ID: %s_%s", macId, uniqueID));
+
                     if (!starFlexClient.isConnected()) starFlexClient.connect().waitForCompletion();
 
-                    starFlexClient.setCallback(new MqttCallback() {
-                        @Override
-                        public void connectionLost(Throwable cause) {
-                            LOGGER.warn(String.format("Connection Lost: %s ", cause.getMessage()));
-                        }
-
-                        @Override
-                        public void messageArrived(String topic, MqttMessage message) throws Exception {
-                        }
-
-                        @Override
-                        public void deliveryComplete(IMqttDeliveryToken token) {
-                        }
-                    });
                     StarFlex starFlex;
+
                     if (isUnlimitedRecords()) {
                         while (true) {
                             starFlex = generateStarFlexByType(starFlexType);
-                            // Star the emulation by type.
                             this.publish(starFlexClient, starFlex);
                         }
                     } else {
@@ -216,68 +203,43 @@ public class StarFlexEmulator {
                             System.exit(0);
                         }
                     }
+
                     break;
                 }
                 case STAR_FLEX_DATA: {
-                    // Getting the resquest topic filter.
-                    final StarFlexRequest request = new StarFlexRequest.StarFlexRequestBuilder().setDefaultValues().setMacId(macId).build();
                     final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, macId, new MemoryPersistence());
-                    LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
+                    LOGGER.info(String.format("Generated the Clien ID: %s_%s", macId, uniqueID));
                     if (!starFlexClient.isConnected()) starFlexClient.connect().waitForCompletion();
 
-                    // Subscribe to a request topic filter by mac ID.
-                    subscribe(starFlexClient, request.getTopic());
+                    // Getting the response topic filter.
+                    StarFlexResponse response = new StarFlexResponse.StarFlexResponseBuilder().setDefaultValues().setMacId(macId).build();
+                    publish(starFlexClient, response);
 
-                    // Prints the message arrived
-                    starFlexClient.setCallback(new MqttCallback() {
-                        @Override
-                        public void connectionLost(Throwable cause) {
-                            LOGGER.warn(String.format("Connection Lost: %s ", cause.getMessage()));
-                            try {
-                                starFlexClient.checkConnection();
-                                emulateData();
-                            } catch (Exception e) {
-                                LOGGER.error(e.getMessage());
+                    StarFlex starFlex;
+                    if (isUnlimitedRecords()) {
+                        while (true) {
+                            starFlex = generateStarFlexByType(starFlexType);
+                            this.publish(starFlexClient, starFlex);
+                        }
+                    } else {
+                        if (recordsNumber > 0) {
+                            for (int index = 0; index < recordsNumber; index++) {
+                                starFlex = generateStarFlexByType(starFlexType);
+                                this.publish(starFlexClient, starFlex);
                             }
+
+                            LOGGER.info(String.format("The emulation for the Mac ID: %s was finished successfully.", this.getMacId()));
+                            System.exit(0);
+                        } else {
+                            System.err.println(String.format("Invalid number of records : %d", recordsNumber));
+                            System.exit(0);
                         }
-
-                        @Override
-                        public void messageArrived(String topic, MqttMessage message) throws Exception {
-                            LOGGER.info(String.format("Got Topic: %s  Message: %s", topic, message));
-                            StarFlexRequest.Request request = JsonUtils.convertStringToRequest(message.toString());
-                            LOGGER.info(String.format("Got the command: %s", request.getCmd()));
-                            StarFlexRequest.Command command = StarFlexRequest.Command.fromString(request.getCmd()).get();
-
-                            switch (command) {
-                                case RFID_SUBSCRIPTIONS: {
-                                    StarFlexResponse response = new StarFlexResponse.StarFlexResponseBuilder().setMacId(macId).setDefaultValues().build();
-                                    starFlexClient.publish(response);
-                                    break;
-                                }
-                                case RFID_EVENTS_DEFAULT_VIZIX_SUBSCRIPTIONS: {
-                                    StarFlexResponse response = new StarFlexResponse.StarFlexResponseBuilder().setMacId(macId).setDefaultValues().build();
-                                    response.getResponse().setUuid("38e953bd-370d-4d05-b652-d5fd430f9425");
-                                    List<String> body = new LinkedList<String>();
-                                    body.add("OK");
-                                    response.getResponse().setBody(body);
-                                    starFlexClient.publish(response);
-
-                                    break;
-                                }
-                                default: {
-                                    LOGGER.warn(String.format("Invalid command: %s", request.getCmd()));
-                                    break;
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void deliveryComplete(IMqttDeliveryToken token) {
-                        }
-                    });
-
+                    }
                     break;
                 }
+
+                default:
+                    break;
             }
         }
     }

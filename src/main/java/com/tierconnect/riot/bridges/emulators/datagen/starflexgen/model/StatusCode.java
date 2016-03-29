@@ -188,9 +188,16 @@ public enum StatusCode {
      */
     HTTP_VERSION_NOT_SUPPORTED(505, "HTTP Version Not Supported");
 
+
     private int code;
     private String value;
 
+    /**
+     * Builds an instance of StatusCode.
+     *
+     * @param code the code
+     * @param value the value
+     */
     StatusCode(final int code, final String value) {
         Preconditions.checkNotNull(code);
         Preconditions.checkNotNull(value);
@@ -198,15 +205,31 @@ public enum StatusCode {
         this.value = value;
     }
 
+    /**
+     * Gets the code.
+     *
+     * @return the code
+     */
     @JsonValue
     public int getCode() {
         return code;
     }
 
+    /**
+     * Gets the value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Gets a StatusCode from code.
+     *
+     * @param code the code
+     * @return the StatusCode
+     */
     public static Optional<StatusCode> fromCode(int code) {
         StatusCode result = null;
 
