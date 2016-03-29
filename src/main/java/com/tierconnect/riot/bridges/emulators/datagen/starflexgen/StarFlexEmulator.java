@@ -129,15 +129,14 @@ public class StarFlexEmulator {
     public void emulateData() throws MqttException, InterruptedException {
         final String serverURI = String.format("tcp://%s:%d", mqttHost, mqttPort);
         final String uniqueID = StringUtils.shortUUID();
-        final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, new MemoryPersistence());
-        LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
-        starFlexClient.connect().waitForCompletion();
-        StarFlex starFlex;
 
         switch (starFlexType) {
             case STAR_FLEX_IE:
             case STAR_FLEX_REQUEST:
             case STAR_FLEX_RESPONSE: {
+                final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, new MemoryPersistence());
+                LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
+                starFlexClient.connect().waitForCompletion();
                 starFlexClient.setCallback(new MqttCallback() {
                     @Override
                     public void connectionLost(Throwable cause) {
@@ -146,26 +145,25 @@ public class StarFlexEmulator {
 
                     @Override
                     public void messageArrived(String topic, MqttMessage message) throws Exception {
-
                     }
 
                     @Override
                     public void deliveryComplete(IMqttDeliveryToken token) {
-
                     }
                 });
+                StarFlex starFlex;
                 if (isUnlimitedRecords()) {
                     while (true) {
                         starFlex = generateStarFlexByType(starFlexType);
                         // Star the emulation by type.
-                        this.start(starFlexType, starFlexClient, starFlex);
+                        this.publish(starFlexClient, starFlex);
                     }
                 } else {
                     if (recordsNumber > 0) {
                         for (int index = 0; index < recordsNumber; index++) {
                             starFlex = generateStarFlexByType(starFlexType);
                             // Star the emulation by type.
-                            this.start(starFlexType, starFlexClient, starFlex);
+                            this.publish(starFlexClient, starFlex);
                         }
 
                         LOGGER.info(String.format("The emulation for the Mac ID: %s was finished successfully.", this.getMacId()));
@@ -180,6 +178,9 @@ public class StarFlexEmulator {
             case STAR_FLEX_DATA: {
                 // Getting the resquest topic filter.
                 final StarFlexRequest request = new StarFlexRequest.StarFlexRequestBuilder().setDefaultValues().setMacId(macId).build();
+                final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, new MemoryPersistence());
+                LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
+                starFlexClient.connect().waitForCompletion();
 
                 // Subscribe to a request topic filter by mac ID.
                 subscribe(starFlexClient, request.getTopic());
@@ -198,13 +199,10 @@ public class StarFlexEmulator {
                         LOGGER.info(String.format("Got the command: %s", request.getCmd()));
                         StarFlexRequest.Command command = StarFlexRequest.Command.fromString(request.getCmd()).get();
 
-                        final String otherUniqueID = StringUtils.shortUUID();
-                        MqttAsyncStarFlexClient client = new MqttAsyncStarFlexClient(serverURI, otherUniqueID, new MemoryPersistence());
-                        client.connect().waitForCompletion();
                         switch (command) {
                             case RFID_SUBSCRIPTIONS: {
                                 StarFlexResponse response = new StarFlexResponse.StarFlexResponseBuilder().setMacId(macId).setDefaultValues().build();
-                                client.publish(response);
+                                starFlexClient.publish(response);
                                 break;
                             }
                             case RFID_EVENTS_DEFAULT_VIZIX_SUBSCRIPTIONS: {
@@ -213,7 +211,7 @@ public class StarFlexEmulator {
                                 List<String> body = new LinkedList<String>();
                                 body.add("OK");
                                 response.getResponse().setBody(body);
-                                client.publish(response);
+                                starFlexClient.publish(response);
 
                                 break;
                             }
@@ -236,22 +234,6 @@ public class StarFlexEmulator {
 
     private boolean isUnlimitedRecords() {
         return recordsNumber == -1;
-    }
-
-
-    private void start(StarFlexType starFlexType, MqttAsyncStarFlexClient starFlexClient, StarFlex starFlex) throws MqttException, InterruptedException {
-        switch (starFlexType) {
-            case STAR_FLEX_IE:
-            case STAR_FLEX_REQUEST:
-            case STAR_FLEX_RESPONSE: {
-                publish(starFlexClient, starFlex);
-                break;
-            }
-
-            default: {
-                break;
-            }
-        }
     }
 
     private StarFlex generateStarFlexByType(StarFlexType starFlexType) {
