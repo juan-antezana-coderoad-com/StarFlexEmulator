@@ -131,9 +131,7 @@ public class StarFlexEmulator {
         final String uniqueID = MqttAsyncStarFlexClient.generateClientId();
         final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, new MemoryPersistence());
         LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
-        MqttConnectOptions co = new MqttConnectOptions();
-        co.setCleanSession(true);
-        starFlexClient.connect(co);
+        starFlexClient.connect();
         StarFlex starFlex;
 
         switch (starFlexType) {
