@@ -44,13 +44,13 @@ public class StarFlexEmulator {
     private int seconds;
 
 
-    public static final String DEFAULT_STAR_FLEX_TYPE = "IE";
+    public static final String DEFAULT_STAR_FLEX_TYPE = "ie";
 
     static {
         // Adds the options.
         OPTIONS.addOption("h", true, String.format("mqtt host (defaults to %s)", DEFAULT_HOST));
         OPTIONS.addOption("p", true, String.format("mqtt port (defaults to %d)", DEFAULT_PORT));
-        OPTIONS.addOption("t", true, String.format("starflex type (ex. data, %s)", DEFAULT_STAR_FLEX_TYPE));
+        OPTIONS.addOption("t", true, String.format("starflex type (ex. data, %s, request, response)", DEFAULT_STAR_FLEX_TYPE));
         OPTIONS.addOption("m", true, String.format("macId (defaults to %s)", DEFAULT_MAC_ID));
         OPTIONS.addOption("r", true, String.format("number of records (defaults to %d (Unlimited))", DEFAULT_RECORDS_NUMBER));
         OPTIONS.addOption("s", true, String.format("number of seconds to run (defaults to %d)", DEFAULT_NUMBER_OF_SECONDS));
@@ -128,10 +128,10 @@ public class StarFlexEmulator {
 
     public void emulateData() throws MqttException, InterruptedException {
         final String serverURI = String.format("tcp://%s:%d", mqttHost, mqttPort);
-        final String uniqueID = MqttAsyncStarFlexClient.generateClientId();
+        final String uniqueID = StringUtils.shortUUID();
         final MqttAsyncStarFlexClient starFlexClient = new MqttAsyncStarFlexClient(serverURI, uniqueID, new MemoryPersistence());
         LOGGER.info(String.format("Generated the Clien ID: %s for the Mac ID: %s", uniqueID, macId));
-        starFlexClient.connect();
+        starFlexClient.connect().waitForCompletion();
         StarFlex starFlex;
 
         switch (starFlexType) {
@@ -198,9 +198,9 @@ public class StarFlexEmulator {
                         LOGGER.info(String.format("Got the command: %s", request.getCmd()));
                         StarFlexRequest.Command command = StarFlexRequest.Command.fromString(request.getCmd()).get();
 
-                        final String otherUniqueID = MqttAsyncStarFlexClient.generateClientId();
-                        MqttAsyncStarFlexClient client = new MqttAsyncStarFlexClient(serverURI, otherUniqueID);
-                        client.connect();
+                        final String otherUniqueID = StringUtils.shortUUID();
+                        MqttAsyncStarFlexClient client = new MqttAsyncStarFlexClient(serverURI, otherUniqueID, new MemoryPersistence());
+                        client.connect().waitForCompletion();
                         switch (command) {
                             case RFID_SUBSCRIPTIONS: {
                                 StarFlexResponse response = new StarFlexResponse.StarFlexResponseBuilder().setMacId(macId).setDefaultValues().build();

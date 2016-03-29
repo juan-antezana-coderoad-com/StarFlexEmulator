@@ -30,7 +30,7 @@ public class MqttAsyncStarFlexClient extends MqttAsyncClient {
         while (!this.isConnected()) {
             LOGGER.warn(String.format("Client Id : %s is trying to connect......", this.getClientId()));
             this.connect();
-            Thread.sleep(5000);
+            Thread.sleep(3000);
         }
         LOGGER.info(String.format("client Id: %s is connected", this.getClientId()));
     }
