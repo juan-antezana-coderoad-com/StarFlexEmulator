@@ -47,16 +47,24 @@ public class StarFlexFactory {
         return Optional.fromNullable(result);
     }
 
-
+    /**
+     * Generate a StarFlexData.
+     *
+     * @param macId the macId
+     * @return the StarFlex
+     */
     private StarFlex generateStarFlexData(final String macId) {
         return generateStarFlexData(macId, StarFlexData.StarFlexDataBuilder.DEFAULT_MAX_TAG_READ_DATA_MESSAGE, StarFlexData.StarFlexDataBuilder.DEFAULT_TAG_READ_DATA_MESSAGE_NUMBER, StarFlexData.StarFlexDataBuilder.DEFAULT_PREFIX_DATA);
     }
 
     /**
-     * Generate a starflex data.
+     * Generates a StarFlexData
      *
-     * @param macId the value of mac ID
-     * @return a starflex
+     * @param macId                    the value of macId
+     * @param maxTagReadDataMessage    the value of maxTagReadDataMessage
+     * @param tagReadDataMessageNumber the value of tagReadDataMessageNumber
+     * @param prefixTagReadDataMessage the prefix to tagReadDataMessage
+     * @return the StarFlex
      */
     public StarFlex generateStarFlexData(final String macId, final int maxTagReadDataMessage, final int tagReadDataMessageNumber, final String prefixTagReadDataMessage) {
         final StarFlex starFlex = new StarFlexData.StarFlexDataBuilder().setMacId(macId).setRandomValues(maxTagReadDataMessage, tagReadDataMessageNumber, prefixTagReadDataMessage).build();
@@ -64,10 +72,10 @@ public class StarFlexFactory {
     }
 
     /**
-     * Generate a starflex Interesting Events
+     * Generate a StarFlexIE
      *
      * @param macId the value of mac ID
-     * @return a starflex
+     * @return a StarFlex
      */
     private StarFlex generateStarFlexIE(final String macId) {
         final StarFlex starFlex = new StarFlexIE.StarFlexIEBuilder().setMacId(macId).setRandomValues().build();
@@ -75,10 +83,10 @@ public class StarFlexFactory {
     }
 
     /**
-     * Generate a starflex response.
+     * Generate a StarFlexResponse
      *
      * @param macId the value of mac ID
-     * @return a starflex
+     * @return a StarFlex
      */
     private StarFlex generateStarFlexResponse(final String macId) {
         final StarFlex starFlex = new StarFlexResponse.StarFlexResponseBuilder().setMacId(macId).setRandomValues().build();
@@ -86,10 +94,10 @@ public class StarFlexFactory {
     }
 
     /**
-     * Generate a starflex request.
+     * Generate a StarFlexRequest
      *
-     * @param macId the value of mac ID
-     * @return a starflex
+     * @param macId the value of macId
+     * @return a StarFlex
      */
     private StarFlex generateStarFlexRequest(final String macId) {
         final StarFlex starFlex = new StarFlexRequest.StarFlexRequestBuilder().setMacId(macId).setRandomValues().build();

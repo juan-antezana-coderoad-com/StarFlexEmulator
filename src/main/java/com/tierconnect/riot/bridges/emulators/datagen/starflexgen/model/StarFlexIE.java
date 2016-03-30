@@ -17,6 +17,11 @@ public class StarFlexIE implements StarFlex {
     private String macId;
     private InterestingEvents interestingEvents;
 
+    /**
+     * Builds an instance of StarFlexIE
+     *
+     * @param builder the StarFlexIEBuilder
+     */
     private StarFlexIE(final StarFlexIEBuilder builder) {
         this.macId = builder.getMacId();
         this.setInterestingEvents(builder.getInterestingEvents());
@@ -37,18 +42,38 @@ public class StarFlexIE implements StarFlex {
         return String.format("%s", JsonUtils.convertObjectToJson(this.getInterestingEvents()));
     }
 
+    /**
+     * Gets the value of macId
+     *
+     * @return the value of macId
+     */
     public String getMacId() {
         return macId;
     }
 
+    /**
+     * Gets the InterestingEvents
+     *
+     * @return the InterestingEvents
+     */
     public InterestingEvents getInterestingEvents() {
         return interestingEvents;
     }
 
+    /**
+     * Sets the value of macId
+     *
+     * @param macId the new value of macId
+     */
     public void setMacId(String macId) {
         this.macId = macId;
     }
 
+    /**
+     * Sets the interesting_events
+     *
+     * @param interestingEvents the new interesting_events
+     */
     public void setInterestingEvents(InterestingEvents interestingEvents) {
         this.interestingEvents = interestingEvents;
     }
@@ -93,6 +118,11 @@ public class StarFlexIE implements StarFlex {
         @JsonProperty(value = "metaData")
         private MetaData metaData;
 
+        /**
+         * Builds an instance of InterestingEvents
+         *
+         * @param builder the InterestingEventsBuilder
+         */
         public InterestingEvents(InterestingEventsBuilder builder) {
             this.tsMs = builder.getTsMs();
             this.tz = builder.getTz();
@@ -108,6 +138,9 @@ public class StarFlexIE implements StarFlex {
             this.metaData = builder.getMetaData();
         }
 
+        /**
+         * InterestingEventsBuilder class.
+         */
         public static class InterestingEventsBuilder {
             public static final String DEFAULT_TZ;
             public static final String DEFAULT_WALLCLOCK;
@@ -134,6 +167,10 @@ public class StarFlexIE implements StarFlex {
             private double cpuUtilPercent;
             private MetaData metaData;
 
+            /**
+             * Initialize the default values.
+             *
+             */
             static {
                 DEFAULT_TZ = "UTC";
                 DEFAULT_WALLCLOCK = "Fri Mar 18 2016 18:53:53 GMT+0000 (UTC)";
@@ -151,114 +188,251 @@ public class StarFlexIE implements StarFlex {
                 DEFAULT_METADATA = new MetaData("keepAlive", "BT0001");
             }
 
+            /**
+             * Gets the value of tsMs
+             *
+             * @return the value of tsMs
+             */
             public long getTsMs() {
                 return tsMs;
             }
 
+            /**
+             * Gets the value of tz
+             *
+             * @return the value of tz
+             */
             public String getTz() {
                 return tz;
             }
 
+            /**
+             * Gets the value of wallclock
+             *
+             * @return the value of wallclock
+             */
             public String getWallclock() {
                 return wallclock;
             }
 
+            /**
+             * Gets the value of upTimeSec
+             *
+             * @return the value of upTimeSec
+             */
             public double getUpTimeSec() {
                 return upTimeSec;
             }
 
+            /**
+             * Gets the list of loadAvg
+             *
+             * @return the list of loadAvg
+             */
             public List<Double> getLoadAvg() {
                 return loadAvg;
             }
 
+            /**
+             * Gets the value of totMem
+             *
+             * @return the value of totMem
+             */
             public long getTotMen() {
                 return totMen;
             }
 
+            /**
+             * Gets the value of freeMem
+             *
+             * @return the value of freeMem
+             */
             public long getFreeMem() {
                 return freeMem;
             }
 
+            /**
+             * Gets the hostName
+             *
+             * @return the hostName
+             */
             public String getHostName() {
                 return hostName;
             }
 
+            /**
+             * Gets the temperature
+             *
+             * @return the temperature
+             */
             public Temperature getTemperature() {
                 return temperature;
             }
 
+            /**
+             * Gets the activeRFIDProgramName
+             *
+             * @return the activeRFIDProgramName
+             */
             public String getActiveRFIDProgramName() {
                 return activeRFIDProgramName;
             }
 
+            /**
+             * Gets the cpuUtilPercent
+             *
+             * @return the cpuUtilPercent
+             */
             public double getCpuUtilPercent() {
                 return cpuUtilPercent;
             }
 
+            /**
+             * Gets the metaData
+             *
+             * @return the metaData
+             */
             public MetaData getMetaData() {
                 return metaData;
             }
 
+            /**
+             * Sets the tsMs
+             *
+             * @param tsMs the new tsMs
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setTsMs(final long tsMs) {
                 this.tsMs = tsMs;
                 return this;
             }
 
+            /**
+             * Sets the tz.
+             *
+             * @param tz the new tz
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setTz(final String tz) {
                 this.tz = tz;
                 return this;
             }
 
+            /**
+             * Sets the wallclock
+             *
+             * @param wallclock the wallclock
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setWallclock(final String wallclock) {
                 this.wallclock = wallclock;
                 return this;
             }
 
+            /**
+             * Sets the getUpTimeSec
+             *
+             * @param upTimeSec the new upTimeSec
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setUpTimeSec(final double upTimeSec) {
                 this.upTimeSec = upTimeSec;
                 return this;
             }
 
+            /**
+             * Sets the list of loadAvg
+             *
+             * @param loadAvg the new list of loadAvg
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setLoadAvg(final List<Double> loadAvg) {
                 this.loadAvg = loadAvg;
                 return this;
             }
 
+            /**
+             * Sets the totMem
+             *
+             * @param totMen the totMem
+             * @return the new InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setTotMen(final long totMen) {
                 this.totMen = totMen;
                 return this;
             }
 
+            /**
+             * Sets the freeMem
+             *
+             * @param freeMem the new freeMem
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setFreeMem(final long freeMem) {
                 this.freeMem = freeMem;
                 return this;
             }
 
+            /**
+             * Sets the hostName
+             *
+             * @param hostName the new hostName
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setHostName(final String hostName) {
                 this.hostName = hostName;
                 return this;
             }
 
+            /**
+             * Sets the temperature
+             *
+             * @param temperature the new temperature
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setTemperature(final Temperature temperature) {
                 this.temperature = temperature;
                 return this;
             }
 
+            /**
+             * Sets the activeRFIDProgramName
+             *
+             * @param activeRFIDProgramName the new activeRFIDProgramName
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setActiveRFIDProgramName(final String activeRFIDProgramName) {
                 this.activeRFIDProgramName = activeRFIDProgramName;
                 return this;
             }
 
+            /**
+             * Sets the cpuUtilPercent
+             *
+             * @param cpuUtilPercent the new cpuUtilPercent
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setCpuUtilPercent(final double cpuUtilPercent) {
                 this.cpuUtilPercent = cpuUtilPercent;
                 return this;
             }
 
+            /**
+             * Sets the metaData
+             *
+             * @param metaData the new metaData
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setMetaData(final MetaData metaData) {
                 this.metaData = metaData;
                 return this;
             }
 
+            /**
+             * Sets all values with default values.
+             *
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setDefaultValues() {
                 this.tsMs = new Date().getTime();
                 this.tz = DEFAULT_TZ;
@@ -275,6 +449,12 @@ public class StarFlexIE implements StarFlex {
                 return this;
             }
 
+            /**
+             * Sets all values with random values.
+             *
+             * @param macId the value of macId
+             * @return the InterestingEventsBuilder
+             */
             public InterestingEventsBuilder setRandomValues(final String macId) {
                 Preconditions.checkNotNull(macId);
                 this.tsMs = Calendar.getInstance().getTimeInMillis();
@@ -293,6 +473,11 @@ public class StarFlexIE implements StarFlex {
                 return this;
             }
 
+            /**
+             * Builds an InterestingEvents
+             *
+             * @return the InterestingEvents
+             */
             public InterestingEvents build() {
                 return new InterestingEvents(this);
             }
@@ -309,24 +494,51 @@ public class StarFlexIE implements StarFlex {
             @JsonProperty(value = "F")
             private double fahrenheit;
 
+            /**
+             * Builds an instance of Temperature
+             *
+             * @param celsius
+             * @param fahrenheit
+             */
             public Temperature(final double celsius, final double fahrenheit) {
                 this.celsius = celsius;
                 this.fahrenheit = fahrenheit;
             }
 
+            /**
+             * Gets the value of celsius
+             *
+             * @return the value of celsius
+             */
             public double getCelsius() {
                 return celsius;
             }
 
-            public void setCelsius(double celsius) {
-                this.celsius = celsius;
-            }
-
+            /**
+             * Gets the value of fahrenheit
+             *
+             * @return the value of fahrenheit
+             */
             public double getFahrenheit() {
                 return fahrenheit;
             }
 
-            public void setFahrenheit(double fahrenheit) {
+            /**
+             * Sets the value of celsius
+             *
+             * @param celsius the new values of celsius
+             */
+            public void setCelsius(final double celsius) {
+                this.celsius = celsius;
+            }
+
+
+            /**
+             * Sets the value of fahrenheit
+             *
+             * @param fahrenheit the new value of fahrenheit
+             */
+            public void setFahrenheit(final double fahrenheit) {
                 this.fahrenheit = fahrenheit;
             }
         }
@@ -340,6 +552,12 @@ public class StarFlexIE implements StarFlex {
             @JsonProperty(value = "myID")
             private String myId;
 
+            /**
+             * Builds an instance of MetaData
+             *
+             * @param type the value of type
+             * @param myId the value of myID
+             */
             public MetaData(final String type, final String myId) {
                 Preconditions.checkNotNull(type);
                 Preconditions.checkNotNull(myId);
@@ -347,19 +565,39 @@ public class StarFlexIE implements StarFlex {
                 this.myId = myId;
             }
 
+            /**
+             * Gets the value of type
+             *
+             * @return the value of type
+             */
             public String getType() {
                 return type;
             }
 
+            /**
+             * Gets the value of myID
+             *
+             * @return the value of myID
+             */
+            public String getMyId() {
+                return myId;
+            }
+
+            /**
+             * Sets the value of type
+             *
+             * @param type the new value of type
+             */
             public void setType(final String type) {
                 Preconditions.checkNotNull(type);
                 this.type = type;
             }
 
-            public String getMyId() {
-                return myId;
-            }
-
+            /**
+             * Sets the value of myID
+             *
+             * @param myId the new value of myID
+             */
             public void setMyId(final String myId) {
                 Preconditions.checkNotNull(myId);
                 this.myId = myId;
@@ -367,41 +605,81 @@ public class StarFlexIE implements StarFlex {
         }
     }
 
+    /**
+     * StarFlexIEBuilder class.
+     */
     public static class StarFlexIEBuilder {
         private String header;
         private String macId;
         private StarFlexIE.InterestingEvents interestingEvents;
 
+        /**
+         * Gets the value of header
+         *
+         * @return the value of header
+         */
         public String getHeader() {
             return header;
         }
 
+        /**
+         * Gets the value of macId
+         *
+         * @return the value of macId
+         */
         public String getMacId() {
             return macId;
         }
 
+        /**
+         * Gets the interestingEvents
+         *
+         * @return the interestingEvents
+         */
         public InterestingEvents getInterestingEvents() {
             return interestingEvents;
         }
 
+        /**
+         * Sets the value of macId
+         *
+         * @param macId the new macId
+         * @return the StarFlexIEBuilder
+         */
         public StarFlexIEBuilder setMacId(final String macId) {
             Preconditions.checkNotNull(macId);
             this.macId = macId;
             return this;
         }
 
+        /**
+         * Sets the interestingEvents
+         *
+         * @param interestingEvents the new interestingEvents
+         * @return the StarFlexIEBuilder
+         */
         public StarFlexIEBuilder setInterestingEvents(InterestingEvents interestingEvents) {
             Preconditions.checkNotNull(interestingEvents);
             this.interestingEvents = interestingEvents;
             return this;
         }
 
+        /**
+         * Sets all values with default values.
+         *
+         * @return the StarFlexIEBuilder
+         */
         public StarFlexIEBuilder setDefaultValues() {
             this.macId = DEFAULT_MAC_ID;
             this.interestingEvents = new InterestingEvents.InterestingEventsBuilder().setDefaultValues().build();
             return this;
         }
 
+        /**
+         * Sets all values with random values.
+         *
+         * @return the StarFlexIEBuilder
+         */
         public StarFlexIEBuilder setRandomValues() {
             // Build Interesting events;
             InterestingEvents.InterestingEventsBuilder builder = new InterestingEvents.InterestingEventsBuilder();
@@ -413,6 +691,11 @@ public class StarFlexIE implements StarFlex {
             return this;
         }
 
+        /**
+         * Builds a StarFlexIE
+         *
+         * @return the StarFlexIE
+         */
         public StarFlexIE build() {
             return new StarFlexIE(this);
         }

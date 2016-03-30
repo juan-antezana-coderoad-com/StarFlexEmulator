@@ -17,7 +17,6 @@ public class StarFlexRequest implements StarFlex {
 
     /**
      * Command enumerator.
-     *
      */
     public static enum Command {
         RFID_SUBSCRIPTIONS("rfid/subscriptions"),
@@ -90,18 +89,38 @@ public class StarFlexRequest implements StarFlex {
         return String.format("%s", JsonUtils.convertObjectToJson(this.getRequest()));
     }
 
+    /**
+     * Gets the value of macId
+     *
+     * @return the value of macId
+     */
     public String getMacId() {
         return macId;
     }
 
+    /**
+     * Gets the request
+     *
+     * @return the request
+     */
     public Request getRequest() {
         return request;
     }
 
+    /**
+     * Sets the value of macId
+     *
+     * @param macId the new value of macId
+     */
     public void setMacId(String macId) {
         this.macId = macId;
     }
 
+    /**
+     * Sets the request
+     *
+     * @param request the new request
+     */
     public void setRequest(Request request) {
         this.request = request;
     }
@@ -114,15 +133,18 @@ public class StarFlexRequest implements StarFlex {
         private RequestMethod method;
         private String cmd;
 
+        /**
+         * Default constructor of Request
+         */
         public Request() {
         }
 
         /**
          * Builds an instance of Request
          *
-         * @param uuid the value of uuid
+         * @param uuid   the value of uuid
          * @param method the method
-         * @param cmd the command
+         * @param cmd    the command
          */
         public Request(final int uuid, final RequestMethod method, final String cmd) {
             Preconditions.checkNotNull(method);
@@ -143,33 +165,62 @@ public class StarFlexRequest implements StarFlex {
             this.cmd = builder.getCmd();
         }
 
+        /**
+         * Gets the uuid
+         *
+         * @return the uuid
+         */
         public int getUuid() {
             return uuid;
         }
 
+        /**
+         * Gets the method
+         *
+         * @return the method
+         */
         public RequestMethod getMethod() {
             return method;
         }
 
+        /**
+         * Gets the cmd
+         *
+         * @return the cmd
+         */
         public String getCmd() {
             return cmd;
         }
 
+        /**
+         * Sets the uuid
+         *
+         * @param uuid the new uuid
+         */
         public void setUuid(int uuid) {
             this.uuid = uuid;
         }
 
+        /**
+         * Sets the method
+         *
+         * @param method the new method
+         */
         public void setMethod(RequestMethod method) {
             this.method = method;
         }
 
+        /**
+         * Sets the cmd
+         *
+         * @param cmd the new cmd
+         */
         public void setCmd(String cmd) {
             this.cmd = cmd;
         }
 
         /**
          * RequestBuilder class.
-         *
          */
         public static class RequestBuilder {
             public static final int DEFAULT_UUID = 12345;
@@ -178,33 +229,71 @@ public class StarFlexRequest implements StarFlex {
             private RequestMethod method;
             private String cmd;
 
+            /**
+             * Gets the uuid
+             *
+             * @return the uuid
+             */
             public int getUuid() {
                 return uuid;
             }
 
+            /**
+             * Gets the method
+             *
+             * @return the method
+             */
             public RequestMethod getMethod() {
                 return method;
             }
 
+            /**
+             * Gets the cmd
+             *
+             * @return the cmd
+             */
             public String getCmd() {
                 return cmd;
             }
 
+            /**
+             * Sets the uuid
+             *
+             * @param uuid the new uuid
+             * @return the RequestBuilder
+             */
             public RequestBuilder setUuid(int uuid) {
                 this.uuid = uuid;
                 return this;
             }
 
+            /**
+             * Sets the method
+             *
+             * @param method the new method
+             * @return the RequestBuilder
+             */
             public RequestBuilder setMethod(RequestMethod method) {
                 this.method = method;
                 return this;
             }
 
+            /**
+             * Sets the cmd
+             *
+             * @param cmd the new cmd
+             * @return the RequestBuilder
+             */
             public RequestBuilder setCmd(String cmd) {
                 this.cmd = cmd;
                 return this;
             }
 
+            /**
+             * Sets all values with default values.
+             *
+             * @return the RequestBuilder
+             */
             public RequestBuilder setDefaultValues() {
                 this.uuid = DEFAULT_UUID;
                 this.method = RequestMethod.GET;
@@ -213,10 +302,20 @@ public class StarFlexRequest implements StarFlex {
                 return this;
             }
 
+            /**
+             * Sets all values with random values
+             *
+             * @return the RequestBuilder
+             */
             public RequestBuilder setRandomValues() {
                 return this.setDefaultValues();
             }
 
+            /**
+             * Builds a Request
+             *
+             * @return the Request
+             */
             public Request build() {
                 return new Request(this);
             }
@@ -225,39 +324,75 @@ public class StarFlexRequest implements StarFlex {
 
     /**
      * StarFlexRequestBuilder class.
-     *
      */
     public static class StarFlexRequestBuilder {
         private String macId;
         private Request request;
 
+        /**
+         * Gets the value of macId
+         *
+         * @return the value of macId
+         */
         public String getMacId() {
             return macId;
         }
 
+        /**
+         * Gets the request
+         *
+         * @return the request
+         */
         public Request getRequest() {
             return request;
         }
 
+        /**
+         * Sets the value of macId
+         *
+         * @param macId the new value of macId
+         * @return the StarFlexRequestBuilder
+         */
         public StarFlexRequestBuilder setMacId(final String macId) {
             this.macId = macId;
             return this;
         }
 
+        /**
+         * Sets the request
+         *
+         * @param request the new request
+         * @return the StarFlexRequestBuilder
+         */
         public StarFlexRequestBuilder setRequest(final Request request) {
             this.request = request;
             return this;
         }
 
+        /**
+         * Sets all values with default values.
+         *
+         * @return the StarFlexRequestBuilder
+         */
         public StarFlexRequestBuilder setDefaultValues() {
             this.request = new Request.RequestBuilder().setDefaultValues().build();
             return this;
         }
 
+        /**
+         * Sets all values with ramdom values
+         *
+         * @return the StarFlexRequestBuilder
+         */
         public StarFlexRequestBuilder setRandomValues() {
             return this.setDefaultValues();
         }
 
+        /**
+         * Builds a StarFlexRequest
+         *
+         * @return the StarFlexRequest
+         */
         public StarFlexRequest build() {
             return new StarFlexRequest(this);
         }

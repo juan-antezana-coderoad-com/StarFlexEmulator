@@ -90,30 +90,65 @@ public class StarFlexData implements StarFlex {
             data = builder.getData();
         }
 
+        /**
+         * Gets the value of type
+         *
+         * @return the value of type
+         */
         public String getType() {
             return type;
         }
 
+        /**
+         * Gets the value of timestamp
+         *
+         * @return the value of timestamp
+         */
         public long getTimestamp() {
             return timestamp;
         }
 
+        /**
+         * Gets the value of seqNum
+         *
+         * @return the value of seqNum
+         */
         public long getSeqNum() {
             return seqNum;
         }
 
+        /**
+         * Gets the value of txAntennaPort
+         *
+         * @return the value of txAntennaPort
+         */
         public String getTxAntennaPort() {
             return txAntennaPort;
         }
 
+        /**
+         * Gets the value of txExpanderPort
+         *
+         * @return the value of txExpanderPort
+         */
         public String getTxExpanderPort() {
             return txExpanderPort;
         }
 
+        /**
+         * Gets the value of transmitSource
+         *
+         * @return the value of transmitSource
+         */
         public String getTransmitSource() {
             return transmitSource;
         }
 
+        /**
+         * Gets the data
+         *
+         * @return the data
+         */
         public String getData() {
             return data;
         }
@@ -139,60 +174,130 @@ public class StarFlexData implements StarFlex {
             private String transmitSource;
             private String data;
 
-
+            /**
+             * Gets the value of type
+             *
+             * @return the value of type
+             */
             public String getType() {
                 return type;
             }
 
+            /**
+             * Gets the value of timestamp
+             *
+             * @return the value of timestamp
+             */
             public long getTimestamp() {
                 return timestamp;
             }
 
+            /**
+             * Gets the value of seqNum
+             *
+             * @return the value of seqNum
+             */
             public long getSeqNum() {
                 return seqNum;
             }
 
+            /**
+             * Gets the value of txAntennaPort
+             *
+             * @return the value of txAntennaPort
+             */
             public String getTxAntennaPort() {
                 return txAntennaPort;
             }
 
+            /**
+             * Gets the value of txExpanderPort
+             *
+             * @return the value of txExpanderPort
+             */
             public String getTxExpanderPort() {
                 return txExpanderPort;
             }
 
+            /**
+             * Gets the value of transmitSource
+             *
+             * @return the value of transmitSource
+             */
             public String getTransmitSource() {
                 return transmitSource;
             }
 
+            /**
+             * Gets the data
+             *
+             * @return the data
+             */
             public String getData() {
                 return data;
             }
 
+            /**
+             * Sets the value of type
+             *
+             * @param type the new value of type
+             * @return the TagReadDataMessageBuilder
+             */
             public TagReadDataMessageBuilder setType(final String type) {
                 this.type = type;
                 return this;
             }
 
+            /**
+             * Sets the value of timestamp
+             *
+             * @param timestamp the new value of timestamp
+             * @return the TagReadDataMessageBuilder
+             */
             public TagReadDataMessageBuilder setTimestamp(final long timestamp) {
                 this.timestamp = timestamp;
                 return this;
             }
 
+            /**
+             * Sets the value of seqNum
+             *
+             * @param seqNum the new value of seqNum
+             * @return the TagReadDataMessageBuilder
+             */
             public TagReadDataMessageBuilder setSeqNum(final long seqNum) {
                 this.seqNum = seqNum;
                 return this;
             }
 
+            /**
+             * Sets the value of txAntennaPort
+             *
+             * @param txAntennaPort the new value of txAntennaPort
+             * @return the TagReadDataMessageBuilder
+             */
             public TagReadDataMessageBuilder setTxAntennaPort(final String txAntennaPort) {
                 this.txAntennaPort = txAntennaPort;
                 return this;
             }
 
+            /**
+             * Sets the value of txExpanderPort
+             *
+             * @param txExpanderPort the new value of txExpanderPort
+             * @return
+             */
             public TagReadDataMessageBuilder setTxExpanderPort(final String txExpanderPort) {
                 this.txExpanderPort = txExpanderPort;
                 return this;
             }
 
+            /**
+             * Sets the value of transmitSource
+             *
+             * @param transmitSource the new value of transmitSource
+             * @return the TagReadDataMessageBuilder
+             */
             public TagReadDataMessageBuilder setTransmitSource(final String transmitSource) {
                 this.transmitSource = transmitSource;
                 return this;

@@ -194,7 +194,7 @@ public enum StatusCode {
     /**
      * Builds an instance of StatusCode.
      *
-     * @param code the code
+     * @param code  the code
      * @param value the value
      */
     StatusCode(final int code, final String value) {

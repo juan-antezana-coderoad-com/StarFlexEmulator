@@ -1,17 +1,14 @@
 package com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.deserialize.RequestMethodDeserialize;
 
 import java.io.Serializable;
 
 /**
  * Created by jantezana on 3/24/16.
  */
-@JsonDeserialize(using = RequestMethodDeserialize.class)
 public enum RequestMethod implements Serializable {
     GET("GET"),
     HEAD("HEAD"),

@@ -1,5 +1,5 @@
 <snippet>
-  <content><![CDATA[
+  <content>
 # StarFlex Emulator
 
 ## Installation
@@ -22,6 +22,6 @@ To display the help: java -jar riot-core-bridges-starflex-emulator-dev.jar -help
 We can generate data for the following starflex type: ie, data, request and response.
 Sample:
 java -jar riot-core-bridges-starflex-emulator-dev.jar -t "ie" -h "localhost" -m "BT0001"
-]]></content>
+  </content>
   <tabTrigger>readme</tabTrigger>
 </snippet>
