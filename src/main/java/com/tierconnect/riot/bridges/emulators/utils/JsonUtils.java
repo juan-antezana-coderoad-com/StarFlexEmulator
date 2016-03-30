@@ -3,9 +3,7 @@ package com.tierconnect.riot.bridges.emulators.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-
 import com.google.common.base.Preconditions;
-
 import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model.StarFlexRequest;
 import org.apache.log4j.Logger;
 

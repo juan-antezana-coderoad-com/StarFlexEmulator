@@ -1,6 +1,5 @@
 package com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;

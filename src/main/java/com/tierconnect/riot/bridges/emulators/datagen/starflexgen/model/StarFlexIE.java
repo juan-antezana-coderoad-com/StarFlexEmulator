@@ -1,13 +1,10 @@
 package com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import com.google.common.base.Preconditions;
-
 import com.tierconnect.riot.bridges.emulators.utils.JsonUtils;
 
 import java.io.Serializable;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;

@@ -1,11 +1,8 @@
 package com.tierconnect.riot.bridges.emulators.datagen.starflexgen;
 
 import com.google.common.base.Preconditions;
-
 import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model.StarFlex;
-
 import org.apache.log4j.Logger;
-
 import org.eclipse.paho.client.mqttv3.MqttAsyncClient;
 import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttException;

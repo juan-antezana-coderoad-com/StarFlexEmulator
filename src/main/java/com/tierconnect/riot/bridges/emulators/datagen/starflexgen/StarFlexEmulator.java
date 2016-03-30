@@ -2,23 +2,15 @@ package com.tierconnect.riot.bridges.emulators.datagen.starflexgen;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-
 import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.factory.StarFlexFactory;
 import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model.StarFlex;
-import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model.StarFlexRequest;
 import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model.StarFlexResponse;
 import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model.StarFlexType;
-
-import com.tierconnect.riot.bridges.emulators.utils.JsonUtils;
 import com.tierconnect.riot.bridges.emulators.utils.StringUtils;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
-
-import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by jantezana on 3/21/16.
@@ -42,9 +34,16 @@ public class StarFlexEmulator {
     private String macId;
     private int recordsNumber;
     private int seconds;
-
+    private String prefixTagReadDataMessage;
+    private int tagReadDataMessageNumber;
+    private int maxTagReadDataMessage;
 
     public static final String DEFAULT_STAR_FLEX_TYPE = "ie";
+
+    public static final int DEFAULT_MAX_TAG_READ_DATA_MESSAGE = 1000;
+    public static final int DEFAULT_TAG_READ_DATA_MESSAGE_NUMBER = 500;
+
+    public static final String DEFAULT_PREFIX_DATA = "TB";
 
     static {
         // Adds the options.
@@ -52,9 +51,15 @@ public class StarFlexEmulator {
         OPTIONS.addOption("p", true, String.format("mqtt port (defaults to %d)", DEFAULT_PORT));
         OPTIONS.addOption("t", true, String.format("starflex type (ex. data, %s, request, response)", DEFAULT_STAR_FLEX_TYPE));
         OPTIONS.addOption("m", true, String.format("macId (defaults to %s)", DEFAULT_MAC_ID));
-        OPTIONS.addOption("r", true, String.format("number of records (defaults to %d (Unlimited))", DEFAULT_RECORDS_NUMBER));
-        OPTIONS.addOption("s", true, String.format("number of seconds to run (defaults to %d)", DEFAULT_NUMBER_OF_SECONDS));
+        OPTIONS.addOption("nr", true, String.format("number of records (defaults to %d (Unlimited))", DEFAULT_RECORDS_NUMBER));
+        OPTIONS.addOption("ns", true, String.format("number of seconds for the delay (defaults to %d)", DEFAULT_NUMBER_OF_SECONDS));
 
+        // Options for Data StarFlex Type.
+        OPTIONS.addOption("prefd", true, String.format("prefix for the data (defaults to %s) -> only works for data starflex type", DEFAULT_PREFIX_DATA));
+        OPTIONS.addOption("maxd", true, String.format("max number of tag read data messsage (defaults to %d) -> only works for data starflex type", DEFAULT_MAX_TAG_READ_DATA_MESSAGE));
+        OPTIONS.addOption("nd", true, String.format("number of tag read data messsage (defaults to %d) -> only works for data starflex type", DEFAULT_TAG_READ_DATA_MESSAGE_NUMBER));
+
+        // Help.
         OPTIONS.addOption("help", false, "show this help");
     }
 
@@ -86,12 +91,6 @@ public class StarFlexEmulator {
                 System.exit(0);
             }
 
-            if (line.hasOption("help")) {
-                HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp(String.format("java -cp %s", this.getClass().getSimpleName()), OPTIONS);
-                System.exit(0);
-            }
-
             mqttHost = line.hasOption("h") ? line.getOptionValue("h") : DEFAULT_HOST;
             mqttPort = line.hasOption("p") ? Integer.parseInt(line.getOptionValue("p")) : DEFAULT_PORT;
 
@@ -110,8 +109,25 @@ public class StarFlexEmulator {
 
             macId = line.hasOption("m") ? line.getOptionValue("m") : DEFAULT_MAC_ID;
 
-            recordsNumber = line.hasOption("r") ? Integer.parseInt(line.getOptionValue("r")) : DEFAULT_RECORDS_NUMBER;
-            seconds = line.hasOption("s") ? Integer.parseInt(line.getOptionValue("s")) : DEFAULT_NUMBER_OF_SECONDS;
+            recordsNumber = line.hasOption("nr") ? Integer.parseInt(line.getOptionValue("nr")) : DEFAULT_RECORDS_NUMBER;
+            seconds = line.hasOption("ns") ? Integer.parseInt(line.getOptionValue("ns")) : DEFAULT_NUMBER_OF_SECONDS;
+
+            if (line.hasOption("help")) {
+                HelpFormatter formatter = new HelpFormatter();
+                formatter.printHelp(String.format("java -cp %s", this.getClass().getSimpleName()), OPTIONS);
+                System.exit(0);
+            }
+
+            switch (starFlexType) {
+                case STAR_FLEX_DATA: {
+                    prefixTagReadDataMessage = line.hasOption("prefd") ? line.getOptionValue("prefd") : DEFAULT_PREFIX_DATA;
+                    maxTagReadDataMessage = line.hasOption("maxd") ? Integer.parseInt(line.getOptionValue("maxd")) : DEFAULT_MAX_TAG_READ_DATA_MESSAGE;
+                    tagReadDataMessageNumber = line.hasOption("nd") ? Integer.parseInt(line.getOptionValue("nd")) : DEFAULT_TAG_READ_DATA_MESSAGE_NUMBER;
+                    break;
+                }
+                default:
+                    tagReadDataMessageNumber = -1;
+            }
         }
     }
 
@@ -186,14 +202,15 @@ public class StarFlexEmulator {
                     if (isUnlimitedRecords()) {
                         while (true) {
                             starFlex = generateStarFlexByType(starFlexType);
-                            this.publish(starFlexClient, starFlex);
+                            Thread.sleep(seconds * 1000);
+                            starFlexClient.publish(starFlex);
                         }
                     } else {
                         if (recordsNumber > 0) {
                             for (int index = 0; index < recordsNumber; index++) {
                                 starFlex = generateStarFlexByType(starFlexType);
-                                // Star the emulation by type.
-                                this.publish(starFlexClient, starFlex);
+                                Thread.sleep(seconds * 1000);
+                                starFlexClient.publish(starFlex);
                             }
 
                             LOGGER.info(String.format("The emulation for the Mac ID: %s was finished successfully.", this.getMacId()));
@@ -213,19 +230,21 @@ public class StarFlexEmulator {
 
                     // Getting the response topic filter.
                     StarFlexResponse response = new StarFlexResponse.StarFlexResponseBuilder().setDefaultValues().setMacId(macId).build();
-                    publish(starFlexClient, response);
+                    starFlexClient.publish(response);
 
                     StarFlex starFlex;
                     if (isUnlimitedRecords()) {
                         while (true) {
                             starFlex = generateStarFlexByType(starFlexType);
-                            this.publish(starFlexClient, starFlex);
+                            Thread.sleep(seconds * 1000);
+                            starFlexClient.publish(starFlex);
                         }
                     } else {
                         if (recordsNumber > 0) {
                             for (int index = 0; index < recordsNumber; index++) {
                                 starFlex = generateStarFlexByType(starFlexType);
-                                this.publish(starFlexClient, starFlex);
+                                Thread.sleep(seconds * 1000);
+                                starFlexClient.publish(starFlex);
                             }
 
                             LOGGER.info(String.format("The emulation for the Mac ID: %s was finished successfully.", this.getMacId()));
@@ -263,39 +282,19 @@ public class StarFlexEmulator {
         Preconditions.checkNotNull(starFlexType);
         StarFlex starFlex;
 
-        // Generate a start flex by type.
-        starFlex = STAR_FLEX_FACTORY.createStarFlex(starFlexType, macId).get();
+        switch (starFlexType) {
+            case STAR_FLEX_DATA: {
+                starFlex = STAR_FLEX_FACTORY.generateStarFlexData(macId, maxTagReadDataMessage, tagReadDataMessageNumber, prefixTagReadDataMessage);
+                break;
+            }
+            default: {
+                // Generate a start flex by type.
+                starFlex = STAR_FLEX_FACTORY.createStarFlex(starFlexType, macId).get();
+                break;
+            }
+        }
+
         return starFlex;
-    }
-
-    /**
-     * Publish a starflex.
-     *
-     * @param starFlexClient the starflex client
-     * @param starFlex       the starflex
-     * @throws InterruptedException
-     * @throws MqttException
-     */
-    private void publish(final MqttAsyncStarFlexClient starFlexClient, final StarFlex starFlex) throws InterruptedException, MqttException {
-        starFlexClient.publish(starFlex);
-
-        // Apply the delay.
-        Thread.sleep(seconds * 1000);
-    }
-
-    /**
-     * Subscribe a topic filter.
-     *
-     * @param starFlexClient the starflex client
-     * @param topicFilter    the topix filter
-     * @throws InterruptedException
-     * @throws MqttException
-     */
-    private void subscribe(final MqttAsyncStarFlexClient starFlexClient, final String topicFilter) throws InterruptedException, MqttException {
-        starFlexClient.subscribe(topicFilter);
-
-        // Apply the delay.
-        Thread.sleep(seconds * 1000);
     }
 
     /**

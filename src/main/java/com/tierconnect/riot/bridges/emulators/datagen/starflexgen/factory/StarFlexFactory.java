@@ -3,23 +3,12 @@ package com.tierconnect.riot.bridges.emulators.datagen.starflexgen.factory;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-
 import com.tierconnect.riot.bridges.emulators.datagen.starflexgen.model.*;
 
 /**
  * Created by jantezana on 3/21/16.
  */
 public class StarFlexFactory {
-
-    /**
-     * Create a starflex by type.
-     *
-     * @param starFlexType the starflex type
-     * @return a starflex
-     */
-    public Optional<StarFlex> createStarFlex(final StarFlexType starFlexType) {
-        return createStarFlex(starFlexType, StarFlex.DEFAULT_MAC_ID);
-    }
 
     /**
      * Create a starflex by type.
@@ -58,14 +47,19 @@ public class StarFlexFactory {
         return Optional.fromNullable(result);
     }
 
+
+    private StarFlex generateStarFlexData(final String macId) {
+        return generateStarFlexData(macId, StarFlexData.StarFlexDataBuilder.DEFAULT_MAX_TAG_READ_DATA_MESSAGE, StarFlexData.StarFlexDataBuilder.DEFAULT_TAG_READ_DATA_MESSAGE_NUMBER, StarFlexData.StarFlexDataBuilder.DEFAULT_PREFIX_DATA);
+    }
+
     /**
      * Generate a starflex data.
      *
      * @param macId the value of mac ID
      * @return a starflex
      */
-    private StarFlex generateStarFlexData(final String macId) {
-        final StarFlex starFlex = new StarFlexData.StarFlexDataBuilder().setMacId(macId).setRandomValues().build();
+    public StarFlex generateStarFlexData(final String macId, final int maxTagReadDataMessage, final int tagReadDataMessageNumber, final String prefixTagReadDataMessage) {
+        final StarFlex starFlex = new StarFlexData.StarFlexDataBuilder().setMacId(macId).setRandomValues(maxTagReadDataMessage, tagReadDataMessageNumber, prefixTagReadDataMessage).build();
         return starFlex;
     }
 
